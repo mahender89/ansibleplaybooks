@@ -1,0 +1,27 @@
+---
+- name: Implementing errors handling
+  hosts: all
+  tasks:
+   - block:
+      - name: Install tomcat8
+        apt:
+         name: tomcat8
+         state: present
+         update_cache: yes
+     rescue:
+      - name: Install tomcat9
+        apt:
+         name: tomcat9
+         state: present
+         update_cache: yes
+     always:
+      - name: check the url reponse
+        url: 
+         url: "{{item}}"
+         status_code: 200
+        with_items:
+         - http://172.31.1.253
+         - http://172.31.12.252
+         - http://172.31.20.202
+...
+

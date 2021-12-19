@@ -1,0 +1,15 @@
+---
+- name: handling multiple flavours of os's
+  hosts: all
+  tasks: 
+   - name: Installing on centos
+     yum:
+      name: git
+      state: present
+     when: ansible_facts['distribution']=="centos"
+   - name: Installing on ubuntu
+     apt:
+      name: git
+      state: present
+     when: ansible_facts['distribution']=="ubuntu"
+...

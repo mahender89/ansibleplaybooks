@@ -1,0 +1,32 @@
+---
+- name: Configuring tomcat
+  hosts: all
+  tasks:
+  - name: Install tomcat9 and tomcat9_admin
+    apt:
+     name: "{{item.a}}"
+     state: "{{item.b}}"
+    with_items:
+     - {a: tomcat9,b: present}
+     - {a: tomcat9-admin,b: present}
+  - name: copy tomcat-users.xml
+    copy:
+     src: tomcat-users.xml
+     dest: /etc/tomcat9
+  - name: Change tomcat port from 8080 to 9090
+    replace: 
+     regexp: 8080
+     replace: 9090
+     path: /etc/tomcat9/server.xml
+  - name: restart tomcat9
+    service:
+     name: tomcat9
+     state: restarted
+  - name: check tomcat response on server1 and server2
+    uri:
+     url: "{{item}}" 
+     status_code: 200
+    with_items:
+     - http://172.31.1.253
+     - http://172.31.12.252
+...

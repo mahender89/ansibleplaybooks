@@ -1,0 +1,27 @@
+---
+- name: Implementing handlers
+  hosts: all
+  tasks:
+   - name: Install apache2
+     apt:
+      name: apache2
+      state: present
+     notify: check url response
+   - name: Edit the index.html file
+     copy:
+      content: "welcomes to anurag"
+      dest: /var/www/html/index.html
+     notify: Restart apache2
+  handlers:
+   - name: restatr apache2
+     service:
+      name: apache2
+      state: restarted
+   - name: check url response
+     uri:
+      url: "{{item}}"
+      status_code: 200
+     with_items:
+      - http://172.31.1.253
+      - http://172.31.12.252
+...
